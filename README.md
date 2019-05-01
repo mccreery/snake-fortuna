@@ -10,11 +10,16 @@ The game features a 32x32 game grid, and should work correctly all the way up to
 ## Using the Makefile
 Use `make [task...]` to run one or more tasks. `-s` ("silent") is useful.
 
-These instructions are borrowed from my private repo, for the purposes of Snake Fortuna you can just run `make -s clean upload-snake` with your LaFortuna connected in DFU mode (by pressing the small button on the top). If your screen blinks white when you first flash the game, just power cycle it.
+These instructions are borrowed from my private repo, for the purposes of Snake Fortuna you can just connect your LaFortuna in DFU mode (by pressing the small button on the top) and run the command:
+```
+make -s clean erase flash-snake
+```
+If your screen blinks white when you first flash the game, just power cycle it.
 
 ### Tasks
 - `all` (default): generates `build/*.hex` for all programs (in this repo only Snake)
 - `clean`: cleans all generated files
+- `erase`: erases the Flash memory
 - `flash-*`: generates, flashes, disconnects and SW resets `build/*.hex`
 - `flash`: shorthand for `flash-*`, using the most recent hex file
 - `eeprom-*`: generates and flashes the EEPROM with `build/*.eep`. You have to flash the EEPROM between erasing and flashing the hex.
