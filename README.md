@@ -3,6 +3,10 @@ This repository is a partial fork/mirror of a private playground repository for 
 
 The game features a 32x32 game grid, and should work correctly all the way up to the maximum score of 1023 or 32^2 - 1 (though I haven't played that long). The game stores the top ten highest scores along with allowing high scorers to input their 3-letter arcade name. When you play the high score is shown on the right side of the screen with your score on the left.
 
+<p style="text-align: center">
+    <img width="294" src="screenshots/mainmenu.png"><img width="294" src="screenshots/board.png"><img width="294" src="screenshots/hiscores.png">
+</p>
+
 ## Using the Makefile
 Use `make [task...]` to run one or more tasks. `-s` ("silent") is useful.
 
