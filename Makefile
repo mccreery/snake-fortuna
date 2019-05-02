@@ -98,11 +98,11 @@ $(BUILD)/%.o: $(BLOB)/%
 
 $(BUILD)/%_4: $(IMG)/%.png
 	mkdir -p $(dir $@)
-	$(MAGICK) $< -depth 4 -colorspace gray Y:$@
+	$(MAGICK) $< -depth 4 -colorspace gray -crop x1 +append Y:$@
 
 $(BUILD)/%_2: $(IMG)/%.png
 	mkdir -p $(dir $@)
-	$(MAGICK) $< -depth 2 -colorspace gray Y:$@
+	$(MAGICK) $< -depth 2 -colorspace gray -crop x1 +append Y:$@
 
 erase:
 	dfu-programmer $(MCU) erase
