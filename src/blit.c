@@ -69,6 +69,9 @@ void blit_565le_rgb(const uint8_t * pgm_data, size_t px_offset, size_t px_size) 
 }
 
 void blit_clear(const uint8_t * pgm_data, size_t px_offset, size_t px_size) {
+    (void)pgm_data;
+    (void)px_offset;
+
     for(size_t i = 0; i < px_size; i++) {
         write_data16(palette[0]);
     }
