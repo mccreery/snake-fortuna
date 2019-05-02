@@ -26,7 +26,7 @@ int16_t line_width(const char * str) {
 
 void draw_char(int16_t x, int16_t y, char c) {
     set_rect((rectangle_t){{x, y}, font_size});
-    write_cmd(MEMORY_WRITE);
+    start_blitting();
 
     size_t px_size = font_size.x * font_size.y;
     size_t px_offset = (c - font_data_first_char) * px_size;

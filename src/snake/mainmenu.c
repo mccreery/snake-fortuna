@@ -8,7 +8,6 @@
 #include "hue.h"
 #include "hw/buttons.h"
 #include "hw/display.h"
-#include "hw/ili934x.h"
 #include "fonts.h"
 
 #define BRIGHT 0xffff
@@ -40,7 +39,7 @@ static void draw_logo(void) {
     gen_palette_mono(0x07e0);
     palette[5] = 0x7800;
 
-    write_cmd(MEMORY_WRITE);
+    start_blitting();
     blit_2_palette(BLOB(snake_2), 0, r.size.x * r.size.y);
 }
 

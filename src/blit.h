@@ -15,10 +15,23 @@ extern uint16_t default_palette[16];
 extern uint16_t * palette;
 
 /**
+ * The index in the palette to mask out as transparent.
+ * Transparent pixels will keep their existing value on screen.
+ * To disable transparent pixels, set to a value >= 16.
+ */
+extern uint8_t transparent_index;
+
+/**
  * Generates a monochrome palette in the current address.
  * @param color The brightest color in the palette.
  */
 void gen_palette_mono(uint16_t color);
+
+/**
+ * Sets up some state for transparent pixel handling. Use this instead of
+ * write_cmd(MEMORY_WRITE) if using blitting functions.
+ */
+void start_blitting(void);
 
 /**
  * Blitter type. Blitter functions should only be passed multiples of 8,

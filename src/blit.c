@@ -1,4 +1,5 @@
 #include <avr/pgmspace.h>
+#include <stdbool.h>
 
 #include "blit.h"
 #include "hw/ili934x.h"
@@ -7,6 +8,34 @@
 __attribute__((section (".noinit")))
 uint16_t default_palette[16];
 uint16_t * palette = default_palette;
+uint8_t transparent_index = 16;
+
+// true when the last command was a MEMORY_WRITE
+static bool writing;
+
+static void write_palette_pixel(uint8_t i) {
+    if(i != transparent_index) {
+        if(!writing) {
+            write_cmd(WRITE_MEMORY_CONTINUE);
+            writing = true;
+        }
+        // Write pixel
+        write_data16(palette[i]);
+    } else {
+        if(writing) {
+            write_cmd(READ_MEMORY_CONTINUE);
+            writing = false;
+
+            // Skip dummy byte
+            (void)DATA_ADDR;
+        }
+
+        // Skip pixel
+        (void)DATA_ADDR;
+        (void)DATA_ADDR;
+        (void)DATA_ADDR;
+    }
+}
 
 void gen_palette_mono(uint16_t color) {
     palette[0] = 0;
@@ -15,6 +44,11 @@ void gen_palette_mono(uint16_t color) {
     for(uint8_t i = 1; i < 15; i++) {
         palette[i] = brightness_4(color, i);
     }
+}
+
+void start_blitting(void) {
+    write_cmd(MEMORY_WRITE);
+    writing = true;
 }
 
 void blit_1_palette(const uint8_t * pgm_data, size_t px_offset, size_t px_size) {
@@ -26,7 +60,7 @@ void blit_1_palette(const uint8_t * pgm_data, size_t px_offset, size_t px_size) 
 
         for(int8_t i = 7; i >= 0; i--) {
             uint8_t j = (x >> i) & 1 ? 15 : 0;
-            write_data16(palette[j]);
+            write_palette_pixel(j);
         }
     }
 }
@@ -40,7 +74,7 @@ void blit_2_palette(const uint8_t * pgm_data, size_t px_offset, size_t px_size) 
 
         for(int8_t i = 6; i >= 0; i -= 2) {
             uint8_t j = (x >> i & 3) * 5;
-            write_data16(palette[j]);
+            write_palette_pixel(j);
         }
     }
 }
