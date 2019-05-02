@@ -16,6 +16,14 @@ make -s clean erase flash-snake
 ```
 If your screen blinks white when you first flash the game, just power cycle it.
 
+## Required Tools
+- GNU `make` ~~and `find`~~
+- `avr-gcc`/`avr-g++`
+- `avr-objcopy`
+- `dfu-programmer` (v0.7.0+)
+- `magick` (ImageMagick)
+  - If you have an older version of IM which uses the `convert` command instead of `magick`, you can set the variable `MAGICK=[path]` in the make command options, or create a symlink `magick -> convert`.
+
 ### Tasks
 - `all` (default): generates `build/*.hex` for all programs (in this repo only Snake)
 - `clean`: cleans all generated files
@@ -27,9 +35,3 @@ If your screen blinks white when you first flash the game, just power cycle it.
 
 ### Adding Programs
 To add a new program (and corresponding build tasks), define a new variable `*_OBJECTS` (case-sensitive) in [`programs.mk`](programs.mk) containing each object (source file, excluding the `src/` prefix and `.c` suffix) needed by the program, separated by spaces.
-
-## Required Programs
-- GNU tools `make` ~~and `find`~~
-- `avr-gcc`/`avr-g++`
-- `avr-objcopy`
-- `dfu-programmer` (v0.7.0+)

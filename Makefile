@@ -1,4 +1,6 @@
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
+# Points to the magick or "convert" tool from legacy ImageMagick
+MAGICK := magick
 
 objs = $(patsubst src/%.c,%,$(wildcard src/$(1).c)) \
 	$(patsubst src/%.s,%,$(wildcard src/$(1).s)) \
@@ -96,11 +98,11 @@ $(BUILD)/%.o: $(BLOB)/%
 
 $(BUILD)/%_4: $(IMG)/%.png
 	mkdir -p $(dir $@)
-	magick convert $< -depth 4 -colorspace gray Y:$@
+	$(MAGICK) $< -depth 4 -colorspace gray Y:$@
 
 $(BUILD)/%_2: $(IMG)/%.png
 	mkdir -p $(dir $@)
-	magick convert $< -depth 2 -colorspace gray Y:$@
+	$(MAGICK) $< -depth 2 -colorspace gray Y:$@
 
 erase:
 	dfu-programmer $(MCU) erase
