@@ -27,6 +27,13 @@ static void process_buttons(void) {
     update_buttons();
     const uint8_t pressed = ~button_state & button_changed;
 
+    if(demo) {
+        if(pressed) {
+            context_switch(setup_mainmenu, tick_mainmenu);
+        }
+        return;
+    }
+
     for(uint8_t i = 0; i < 4; i++) {
         if((pressed & _BV(PNORTH + i)) &&
                 !point_eq(NEGATE_POINT(head.direction), DIRECTIONS[i])) {
@@ -62,7 +69,7 @@ void tick_board(void) {
     move_head();
     bool eaten_apple = read_cell(head.position) == APPLE_COLOR;
 
-    if(eaten_apple) {
+    if(eaten_apple || (demo && compare_score(score, (score_t){{0}, {0, 0, 0, 8}}) < 0)) {
         // Handle previous apple eaten
         int8_t i = increment_score(&score);
         draw_score_suffix(SCORE_LEFT, SCORE_Y, score, i);
@@ -74,7 +81,11 @@ void tick_board(void) {
 
     if(read_cell(head.position) == SNAKE_COLOR) {
         // Game over
-        context_switch(setup_hiscores, tick_hiscores);
+        if(demo) {
+            context_switch(setup_mainmenu, tick_mainmenu);
+        } else {
+            context_switch(setup_hiscores, tick_hiscores);
+        }
     } else {
         // No game over, so paint head
         write_cell(head.position, SNAKE_COLOR);
