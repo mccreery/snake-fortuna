@@ -64,7 +64,7 @@ static void place_apple(void) {
 
 void tick_board(void) {
     process_buttons();
-    if(frame_counter & 3) return;
+    if(frame_counter & 3 || tick_func_last == tick_board) return;
 
     move_head();
     bool eaten_apple = read_cell(head.position) == APPLE_COLOR;
@@ -113,6 +113,10 @@ void setup_board(void) {
     draw_string(SCORE_LEFT + 12, 0, "YOUR\nSCORE", CENTER);
     draw_string(SCORE_RIGHT + 12, 0, "HIGH\nSCORE", CENTER);
     font_pitch.y = y_spacing;
+
+    if(demo) {
+        draw_string(LCD_SIZE.y / 2, 0, "D E M O", CENTER);
+    }
 
     init_font_seg();
     draw_score_suffix(SCORE_LEFT, SCORE_Y, score, 0);
