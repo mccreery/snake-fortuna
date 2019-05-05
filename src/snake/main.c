@@ -17,7 +17,7 @@ void main(void) {
     init_buttons();
 
     palette = white_palette;
-    gen_palette_mono(0xffff);
+    gen_palette_mono(0xffff, 1);
 
     load_scores();
     game_loop(setup_mainmenu, tick_mainmenu);

@@ -40,7 +40,7 @@ static void draw_logo(void) {
     set_rect(r);
 
     palette = default_palette;
-    gen_palette_mono(0x07e0);
+    gen_palette_mono(0x07e0, 5);
     palette[5] = 0x7800;
 
     write_cmd(MEMORY_WRITE);
@@ -70,7 +70,7 @@ void setup_mainmenu(void) {
     demo_counter = 0;
 
     palette = dim_palette;
-    gen_palette_mono(0x7bef);
+    gen_palette_mono(0x7bef, 5);
 
     init_font_sqr();
     fill_rect(TRANSPOSE(LCD_BOUNDS), 0);

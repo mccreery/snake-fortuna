@@ -8,11 +8,11 @@ __attribute__((section (".noinit")))
 uint16_t default_palette[16];
 uint16_t * palette = default_palette;
 
-void gen_palette_mono(uint16_t color) {
+void gen_palette_mono(uint16_t color, uint8_t step) {
     palette[0] = 0;
     palette[15] = color;
 
-    for(uint8_t i = 1; i < 15; i++) {
+    for(uint8_t i = step; i < 15; i += step) {
         palette[i] = brightness_4(color, i);
     }
 }

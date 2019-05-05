@@ -78,7 +78,7 @@ static void tick_new_title(void) {
     if(hue >= 192) hue = 0;
 
     palette = default_palette;
-    gen_palette_mono(hue192to565(hue));
+    gen_palette_mono(hue192to565(hue), 5);
     draw_string(LCD_SIZE.y / 2, 16, "NEW HI SCORE!", CENTER);
 }
 
