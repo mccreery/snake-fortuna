@@ -28,7 +28,7 @@ static const char * const options[] = {
 static uint8_t highlighted;
 
 static uint16_t demo_counter;
-#define DEMO_TIMEOUT 2100
+#define DEMO_TIMEOUT 1050
 
 USEBLOB(snake_2);
 
