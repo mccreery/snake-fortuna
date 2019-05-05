@@ -23,6 +23,25 @@ static const point_t DIRECTIONS[4] = {
 
 bool demo;
 
+static point_t demo_apples[] PROGMEM = {
+    {15, 6},
+    {10, 8},
+    {25, 9},
+    {2, 20}
+};
+static uint8_t apple_index;
+
+point_t get_demo_apple(void) {
+    point_t apple;
+
+    for(uint8_t i = 0; i < sizeof(apple); i++) {
+        ((uint8_t *)&apple)[i] = pgm_read_byte(&((uint8_t *)&demo_apples[apple_index])[i]);
+    }
+    apple_index = (apple_index + 1) % (sizeof(demo_apples) / sizeof(demo_apples[0]));
+
+    return apple;
+}
+
 static void process_buttons(void) {
     update_buttons();
     const uint8_t pressed = ~button_state & button_changed;
@@ -52,10 +71,14 @@ static void draw_score_suffix(int16_t x, int16_t y, const score_t score, uint8_t
 static void place_apple(void) {
     point_t pos;
 
-    do {
-        pos.x = rng8() & GRID_MASK;
-        pos.y = rng8() & GRID_MASK;
-    } while(read_cell(pos) == SNAKE_COLOR);
+    if(demo) {
+        pos = get_demo_apple();
+    } else {
+        do {
+            pos.x = rng8() & GRID_MASK;
+            pos.y = rng8() & GRID_MASK;
+        } while(read_cell(pos) == SNAKE_COLOR);
+    }
 
     write_cell(pos, APPLE_COLOR);
 }
@@ -120,6 +143,7 @@ void setup_board(void) {
         draw_string(LCD_SIZE.y / 2, 0, "D E M O", CENTER);
         next_setup = setup_mainmenu;
         next_tick = tick_mainmenu;
+        apple_index = 0;
     }
 
     init_font_seg();
