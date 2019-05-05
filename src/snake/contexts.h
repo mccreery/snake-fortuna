@@ -1,11 +1,14 @@
 #ifndef MENUS_H_
 #define MENUS_H_
 
+#include <stdbool.h>
+
 #include "gameloop.h"
 
 void setup_mainmenu(void);
 void tick_mainmenu(void);
 
+extern bool demo;
 void setup_board(void);
 void tick_board(void);
 

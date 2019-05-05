@@ -27,6 +27,9 @@ static const char * const options[] = {
 };
 static uint8_t highlighted;
 
+static uint16_t demo_counter;
+#define DEMO_TIMEOUT 2100
+
 USEBLOB(snake_2);
 
 static void draw_logo(void) {
@@ -63,6 +66,9 @@ static void highlight(uint8_t option) {
 }
 
 void setup_mainmenu(void) {
+    demo = false;
+    demo_counter = 0;
+
     palette = dim_palette;
     gen_palette_mono(0x7bef);
 
@@ -85,6 +91,14 @@ void tick_mainmenu(void) {
     update_buttons();
 
     uint8_t pressed = button_changed & ~button_state;
+    if(pressed) {
+        demo_counter = 0;
+    } else if(++demo_counter == DEMO_TIMEOUT) {
+        demo = true;
+        context_switch(setup_board, tick_board);
+        return;
+    }
+
     if(pressed & _BV(PNORTH)) {
         if(highlighted == 0) {
             highlight(NO_OPTIONS - 1);

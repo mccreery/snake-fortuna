@@ -21,6 +21,8 @@ static const point_t DIRECTIONS[4] = {
     {0, -1}, {1, 0}, {0, 1}, {-1, 0}
 };
 
+bool demo;
+
 static void process_buttons(void) {
     update_buttons();
     const uint8_t pressed = ~button_state & button_changed;
