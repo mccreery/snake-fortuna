@@ -27,13 +27,6 @@ static void process_buttons(void) {
     update_buttons();
     const uint8_t pressed = ~button_state & button_changed;
 
-    if(demo) {
-        if(pressed) {
-            context_switch(setup_mainmenu, tick_mainmenu);
-        }
-        return;
-    }
-
     for(uint8_t i = 0; i < 4; i++) {
         if((pressed & _BV(PNORTH + i)) &&
                 !point_eq(NEGATE_POINT(head.direction), DIRECTIONS[i])) {
@@ -43,12 +36,14 @@ static void process_buttons(void) {
 }
 
 static void draw_score_suffix(int16_t x, int16_t y, const score_t score, uint8_t i) {
+    if(demo) init_font_seg();
     y += i * font_pitch.y;
 
     for(; i < 4; i++) {
         draw_char(x, y, '0' + score.score[i]);
         y += font_pitch.y;
     }
+    if(demo) init_font_sqr();
 }
 
 static void place_apple(void) {
@@ -63,7 +58,11 @@ static void place_apple(void) {
 }
 
 void tick_board(void) {
-    process_buttons();
+    if(demo) {
+        tick_anybutton();
+    } else {
+        process_buttons();
+    }
     if(frame_counter & 3 || tick_func_last == tick_board) return;
 
     move_head();
@@ -116,11 +115,14 @@ void setup_board(void) {
 
     if(demo) {
         draw_string(LCD_SIZE.y / 2, 0, "D E M O", CENTER);
+        next_setup = setup_mainmenu;
+        next_tick = tick_mainmenu;
     }
 
     init_font_seg();
     draw_score_suffix(SCORE_LEFT, SCORE_Y, score, 0);
     draw_score_suffix(SCORE_RIGHT, SCORE_Y, hiscores[0], 0);
+    if(demo) init_font_sqr();
 
     clear_grid();
     place_apple();
