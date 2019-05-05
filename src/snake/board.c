@@ -70,14 +70,15 @@ static void draw_score_suffix(int16_t x, int16_t y, const score_t score, uint8_t
 
 static void place_apple(void) {
     point_t pos;
-
     if(demo) {
         pos = get_demo_apple();
     } else {
-        do {
-            pos.x = rng8() & GRID_MASK;
-            pos.y = rng8() & GRID_MASK;
-        } while(read_cell(pos) == SNAKE_COLOR);
+        pos.x = -1;
+    }
+
+    while(pos.x == -1 || read_cell(pos) == SNAKE_COLOR) {
+        pos.x = rng8() & GRID_MASK;
+        pos.y = rng8() & GRID_MASK;
     }
 
     write_cell(pos, APPLE_COLOR);
@@ -94,7 +95,7 @@ void tick_board(void) {
     move_head();
     bool eaten_apple = read_cell(head.position) == APPLE_COLOR;
 
-    if(eaten_apple || (demo && compare_score(score, (score_t){{0}, {0, 0, 0, 8}}) < 0)) {
+    if(eaten_apple) {
         // Handle previous apple eaten
         int8_t i = increment_score(&score);
         draw_score_suffix(SCORE_LEFT, SCORE_Y, score, i);
