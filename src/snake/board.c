@@ -36,7 +36,10 @@ static void process_buttons(void) {
 }
 
 static void draw_score_suffix(int16_t x, int16_t y, const score_t score, uint8_t i) {
-    if(demo) init_font_seg();
+    if(demo) {
+        init_font_seg();
+        palette = white_palette;
+    }
     y += i * font_pitch.y;
 
     for(; i < 4; i++) {
