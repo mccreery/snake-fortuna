@@ -106,7 +106,7 @@ void tick_board(void) {
         write_cell(tail.position, 0);
     }
 
-    if(read_cell(head.position) == SNAKE_COLOR) {
+    if(!eaten_apple && read_cell(head.position) != 0) {
         // Game over
         if(demo) {
             context_switch(setup_mainmenu, tick_mainmenu);
