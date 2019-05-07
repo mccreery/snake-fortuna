@@ -57,9 +57,22 @@ void setup_markers(void) {
     move_head();
 }
 
-static inline void apply_direction(marker_t * marker) {
-    marker->position.x = (marker->position.x + marker->direction.x) & GRID_MASK;
-    marker->position.y = (marker->position.y + marker->direction.y) & GRID_MASK;
+static void apply_direction(marker_t * marker) {
+    if(marker->direction.x > 0) {
+        ++marker->position.x;
+        if(marker->position.x == GRID_SIZE) { marker->position.x = 0; }
+    } else if(marker->direction.x < 0) {
+        --marker->position.x;
+        if(marker->position.x == -1) { marker->position.x = GRID_SIZE - 1; }
+    }
+
+    if(marker->direction.y > 0) {
+        ++marker->position.y;
+        if(marker->position.y == GRID_SIZE) { marker->position.y = 0; }
+    } else if(marker->direction.y < 0) {
+        --marker->position.y;
+        if(marker->position.y == -1) { marker->position.y = GRID_SIZE - 1; }
+    }
 }
 
 void move_head(void) {
