@@ -102,6 +102,7 @@ static void start_level(void) {
         write_cell((point_t){tail.position.x, y}, SNAKE_COLOR);
     }
     level_countdown = 140;
+    place_apple();
 }
 
 void tick_board(void) {
@@ -124,6 +125,11 @@ void tick_board(void) {
         // Handle previous apple eaten
         int8_t i = increment_score(&score);
         draw_score_suffix(SCORE_LEFT, SCORE_Y, score, i);
+
+        if((get_score(score) & 15) == 0) {
+            start_level();
+            return;
+        }
     } else {
         // Clear up tail
         move_tail();
@@ -178,5 +184,4 @@ void setup_board(void) {
     if(demo) init_font_sqr();
 
     start_level();
-    place_apple();
 }
