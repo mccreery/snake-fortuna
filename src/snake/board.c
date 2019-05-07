@@ -165,7 +165,12 @@ void tick_board(void) {
         draw_score_suffix(SCORE_LEFT, SCORE_Y, score, i);
 
         if((get_score(score) & 15) == 0) {
-            start_level();
+            if(demo) {
+                // Don't let the demo get past level 0
+                context_switch(setup_mainmenu, tick_mainmenu);
+            } else {
+                start_level();
+            }
             return;
         }
     } else {
