@@ -6,6 +6,7 @@
 #include "grid.h"
 #include "hw/buttons.h"
 #include "hw/display.h"
+#include "levels.h"
 #include "markers.h"
 #include "rng.h"
 #include "scoreio.h"
@@ -24,14 +25,20 @@ static const point_t DIRECTIONS[4] = {
 bool demo;
 
 static point_t demo_apples[] PROGMEM = {
-    {15, 6},
-    {10, 8},
-    {25, 9},
-    {2, 20}
+    {11, 12},
+    {28, 18},
+    {15, 29},
+    {1, 28},
+    {25, 3}
 };
 static uint8_t apple_index;
 
-point_t get_demo_apple(void) {
+static uint8_t level_countdown;
+static uint8_t level;
+static int8_t step;
+static char level_text[] = "LEVEL XX";
+
+static point_t get_demo_apple(void) {
     point_t apple;
 
     for(uint8_t i = 0; i < sizeof(apple); i++) {
@@ -76,7 +83,7 @@ static void place_apple(void) {
         pos.x = -1;
     }
 
-    while(pos.x == -1 || read_cell(pos) == SNAKE_COLOR) {
+    while(pos.x == -1 || read_cell(pos) != 0) {
         pos.x = rng8() & GRID_MASK;
         pos.y = rng8() & GRID_MASK;
     }
@@ -84,13 +91,70 @@ static void place_apple(void) {
     write_cell(pos, APPLE_COLOR);
 }
 
+static void start_level(void) {
+    uint16_t real_score = get_score(score);
+    level = real_score >> 4;
+    load_level(level & 3);
+
+    uint8_t tens = level / 10;
+    level_text[sizeof(level_text) - 3] = '0' + tens;
+    level_text[sizeof(level_text) - 2] = '0' + (level - tens * 10);
+
+    // Increase speed every time the levels repeat
+    step = 5 - (level >> 2);
+    if(step < 0) step = 0;
+
+    clear_turns();
+    tail = head = (marker_t){{1, 1}, {0, 1}};
+    tail.position.y -= get_score(score) + 1;
+
+    int8_t y = tail.position.y + 1;
+    if(y < 0) y = 0;
+
+    for(; y <= head.position.y; y++) {
+        write_cell((point_t){tail.position.x, y}, SNAKE_COLOR);
+    }
+    level_countdown = 175;
+    place_apple();
+}
+
 void tick_board(void) {
+    static uint8_t step_counter;
+
+    if(level_countdown > 0) {
+        --level_countdown;
+
+        // Don't draw level number on the demo
+        if(!demo && (level_countdown & 31) == 0) {
+            init_font_sqr();
+
+            if((level_countdown & 63) == 0) {
+                draw_string(LCD_SIZE.y / 2, 0, level_text, CENTER);
+            } else {
+                font_blitter = blit_clear;
+                draw_string(LCD_SIZE.y / 2, 0, level_text, CENTER);
+                font_blitter = blit_2_palette;
+            }
+
+            init_font_seg();
+        }
+        return;
+    }
+
     if(demo) {
         tick_anybutton();
     } else {
         process_buttons();
     }
-    if(frame_counter & 3 || tick_func_last == tick_board) return;
+
+    // We've been switched out
+    if(tick_func_last == tick_board) return;
+
+    if(++step_counter == step) {
+        step_counter = 0;
+    } else {
+        return;
+    }
 
     move_head();
     bool eaten_apple = read_cell(head.position) == APPLE_COLOR;
@@ -99,13 +163,23 @@ void tick_board(void) {
         // Handle previous apple eaten
         int8_t i = increment_score(&score);
         draw_score_suffix(SCORE_LEFT, SCORE_Y, score, i);
+
+        if((get_score(score) & 15) == 0) {
+            if(demo) {
+                // Don't let the demo get past level 0
+                context_switch(setup_mainmenu, tick_mainmenu);
+            } else {
+                start_level();
+            }
+            return;
+        }
     } else {
         // Clear up tail
         move_tail();
         write_cell(tail.position, 0);
     }
 
-    if(read_cell(head.position) == SNAKE_COLOR) {
+    if(!eaten_apple && read_cell(head.position) != 0) {
         // Game over
         if(demo) {
             context_switch(setup_mainmenu, tick_mainmenu);
@@ -152,6 +226,5 @@ void setup_board(void) {
     draw_score_suffix(SCORE_RIGHT, SCORE_Y, hiscores[0], 0);
     if(demo) init_font_sqr();
 
-    clear_grid();
-    place_apple();
+    start_level();
 }

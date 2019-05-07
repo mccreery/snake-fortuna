@@ -31,7 +31,7 @@ WARNINGS    := -Wall -Wextra -pedantic \
                -Wstrict-overflow=5 -fstrict-overflow -Winline
 CWARNINGS   := -Wstrict-prototypes -Wmissing-prototypes \
                -Wold-style-definition -Wold-style-declaration
-LINKFLAGS   := -mmcu=$(MCU) -Os -Wl,--gc-sections
+LINKFLAGS   := -mmcu=$(MCU) -O3 -Wl,--gc-sections
 
 COMMONFLAGS := $(WARNINGS) $(LINKFLAGS) -fdata-sections -ffunction-sections
 CFLAGS      := $(COMMONFLAGS) $(CWARNINGS) -std=gnu99
@@ -103,6 +103,10 @@ $(BUILD)/%_4: $(IMG)/%.png
 $(BUILD)/%_2: $(IMG)/%.png
 	mkdir -p $(dir $@)
 	$(MAGICK) $< -depth 2 -colorspace gray Y:$@
+
+$(BUILD)/%_1: $(IMG)/%.png
+	mkdir -p $(dir $@)
+	$(MAGICK) $< -depth 1 -colorspace gray Y:$@
 
 erase:
 	dfu-programmer $(MCU) erase

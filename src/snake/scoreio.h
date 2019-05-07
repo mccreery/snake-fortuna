@@ -72,4 +72,11 @@ static inline void get_score_text(const score_t score, char * const str) {
     str[4] = '\0';
 }
 
+static inline uint16_t get_score(const score_t score) {
+    return score.score[0] * 1000 +
+            score.score[1] * 100 +
+            score.score[2] * 10 +
+            score.score[3];
+}
+
 #endif
