@@ -104,6 +104,10 @@ $(BUILD)/%_2: $(IMG)/%.png
 	mkdir -p $(dir $@)
 	$(MAGICK) $< -depth 2 -colorspace gray Y:$@
 
+$(BUILD)/%_1: $(IMG)/%.png
+	mkdir -p $(dir $@)
+	$(MAGICK) $< -depth 1 -colorspace gray Y:$@
+
 erase:
 	dfu-programmer $(MCU) erase
 

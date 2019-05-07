@@ -6,6 +6,7 @@
 #include "grid.h"
 #include "hw/buttons.h"
 #include "hw/display.h"
+#include "levels.h"
 #include "markers.h"
 #include "rng.h"
 #include "scoreio.h"
@@ -152,6 +153,6 @@ void setup_board(void) {
     draw_score_suffix(SCORE_RIGHT, SCORE_Y, hiscores[0], 0);
     if(demo) init_font_sqr();
 
-    clear_grid();
+    load_level(4);
     place_apple();
 }
