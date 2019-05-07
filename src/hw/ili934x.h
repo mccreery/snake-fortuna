@@ -1,13 +1,11 @@
 /*
- * Author: Sam McCreery 2019
+ * Original work: Steve Gunn
+ * Licence: This work is licensed under the Creative Commons Attribution License.
+ *           View this license at http://creativecommons.org/about/licenses/
+ * Modification: Sam McCreery 2019
  * License: Creative Commons Attribution
  *          CC BY, https://creativecommons.org/licenses/by/4.0/
  */
-/*  Author: Steve Gunn
- * Licence: This work is licensed under the Creative Commons Attribution License.
- *           View this license at http://creativecommons.org/about/licenses/
- */
-
 #ifndef ILI934X_H_
 #define ILI934X_H_
 
