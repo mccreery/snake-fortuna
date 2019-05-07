@@ -17,8 +17,9 @@ extern uint16_t * palette;
 /**
  * Generates a monochrome palette in the current address.
  * @param color The brightest color in the palette.
+ * @param step The distance between palette entries to modify.
  */
-void gen_palette_mono(uint16_t color);
+void gen_palette_mono(uint16_t color, uint8_t step);
 
 /**
  * Blitter type. Blitter functions should only be passed multiples of 8,

@@ -29,7 +29,7 @@ void tick_anybutton(void) {
             (f >> 1); // blue
 
         palette = default_palette;
-        gen_palette_mono(color);
+        gen_palette_mono(color, 5);
         draw_string(LCD_SIZE.y / 2, 224, "PRESS ANY BUTTON", CENTER);
     }
 }
