@@ -32,6 +32,8 @@ static point_t demo_apples[] PROGMEM = {
 };
 static uint8_t apple_index;
 
+static uint8_t level_countdown;
+
 point_t get_demo_apple(void) {
     point_t apple;
 
@@ -77,7 +79,7 @@ static void place_apple(void) {
         pos.x = -1;
     }
 
-    while(pos.x == -1 || read_cell(pos) == SNAKE_COLOR) {
+    while(pos.x == -1 || read_cell(pos) != 0) {
         pos.x = rng8() & GRID_MASK;
         pos.y = rng8() & GRID_MASK;
     }
@@ -85,7 +87,29 @@ static void place_apple(void) {
     write_cell(pos, APPLE_COLOR);
 }
 
+static void start_level(void) {
+    uint16_t real_score = get_score(score);
+    load_level(real_score >> 4 & 3);
+
+    clear_turns();
+    tail = head = (marker_t){{1, 1}, {0, 1}};
+    tail.position.y -= get_score(score) + 1;
+
+    int8_t y = tail.position.y + 1;
+    if(y < 0) y = 0;
+
+    for(; y <= head.position.y; y++) {
+        write_cell((point_t){tail.position.x, y}, SNAKE_COLOR);
+    }
+    level_countdown = 140;
+}
+
 void tick_board(void) {
+    if(level_countdown > 0) {
+        --level_countdown;
+        return;
+    }
+
     if(demo) {
         tick_anybutton();
     } else {
@@ -153,6 +177,6 @@ void setup_board(void) {
     draw_score_suffix(SCORE_RIGHT, SCORE_Y, hiscores[0], 0);
     if(demo) init_font_sqr();
 
-    load_level(4);
+    start_level();
     place_apple();
 }
