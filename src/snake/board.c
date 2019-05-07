@@ -33,6 +33,8 @@ static point_t demo_apples[] PROGMEM = {
 static uint8_t apple_index;
 
 static uint8_t level_countdown;
+static uint8_t level;
+static char level_text[] = "LEVEL X";
 
 point_t get_demo_apple(void) {
     point_t apple;
@@ -89,7 +91,9 @@ static void place_apple(void) {
 
 static void start_level(void) {
     uint16_t real_score = get_score(score);
-    load_level(real_score >> 4 & 3);
+    level = real_score >> 4;
+    load_level(level & 3);
+    level_text[sizeof(level_text) - 2] = '0' + level;
 
     clear_turns();
     tail = head = (marker_t){{1, 1}, {0, 1}};
@@ -101,13 +105,27 @@ static void start_level(void) {
     for(; y <= head.position.y; y++) {
         write_cell((point_t){tail.position.x, y}, SNAKE_COLOR);
     }
-    level_countdown = 140;
+    level_countdown = 175;
     place_apple();
 }
 
 void tick_board(void) {
     if(level_countdown > 0) {
         --level_countdown;
+
+        if((level_countdown & 31) == 0) {
+            init_font_sqr();
+
+            if((level_countdown & 63) == 0) {
+                draw_string(LCD_SIZE.y / 2, 0, level_text, CENTER);
+            } else {
+                font_blitter = blit_clear;
+                draw_string(LCD_SIZE.y / 2, 0, level_text, CENTER);
+                font_blitter = blit_2_palette;
+            }
+
+            init_font_seg();
+        }
         return;
     }
 
