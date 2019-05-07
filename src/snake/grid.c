@@ -1,3 +1,8 @@
+/*
+ * Author: Sam McCreery 2019
+ * License: Creative Commons Attribution
+ *          CC BY, https://creativecommons.org/licenses/by/4.0/
+ */
 #include "grid.h"
 #include "hw/display.h"
 #include "hw/ili934x.h"

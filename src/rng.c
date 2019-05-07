@@ -1,3 +1,8 @@
+/*
+ * Author: Sam McCreery 2019
+ * License: Creative Commons Attribution
+ *          CC BY, https://creativecommons.org/licenses/by/4.0/
+ */
 #include "rng.h"
 
 uint8_t rng8_seed = 3;
