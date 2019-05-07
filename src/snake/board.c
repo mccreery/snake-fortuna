@@ -36,7 +36,7 @@ static uint8_t level_countdown;
 static uint8_t level;
 static char level_text[] = "LEVEL X";
 
-point_t get_demo_apple(void) {
+static point_t get_demo_apple(void) {
     point_t apple;
 
     for(uint8_t i = 0; i < sizeof(apple); i++) {
