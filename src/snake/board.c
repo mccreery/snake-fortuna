@@ -35,7 +35,7 @@ static uint8_t apple_index;
 static uint8_t level_countdown;
 static uint8_t level;
 static int8_t step;
-static char level_text[] = "LEVEL X";
+static char level_text[] = "LEVEL XX";
 
 static point_t get_demo_apple(void) {
     point_t apple;
@@ -94,7 +94,10 @@ static void start_level(void) {
     uint16_t real_score = get_score(score);
     level = real_score >> 4;
     load_level(level & 3);
-    level_text[sizeof(level_text) - 2] = '0' + level;
+
+    uint8_t tens = level / 10;
+    level_text[sizeof(level_text) - 3] = '0' + tens;
+    level_text[sizeof(level_text) - 2] = '0' + (level - tens * 10);
 
     // Increase speed every time the levels repeat
     step = 5 - (level >> 2);
