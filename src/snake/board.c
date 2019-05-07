@@ -34,6 +34,7 @@ static uint8_t apple_index;
 
 static uint8_t level_countdown;
 static uint8_t level;
+static int8_t step;
 static char level_text[] = "LEVEL X";
 
 static point_t get_demo_apple(void) {
@@ -95,6 +96,10 @@ static void start_level(void) {
     load_level(level & 3);
     level_text[sizeof(level_text) - 2] = '0' + level;
 
+    // Increase speed every time the levels repeat
+    step = 5 - (level >> 2);
+    if(step < 0) step = 0;
+
     clear_turns();
     tail = head = (marker_t){{1, 1}, {0, 1}};
     tail.position.y -= get_score(score) + 1;
@@ -110,10 +115,13 @@ static void start_level(void) {
 }
 
 void tick_board(void) {
+    static uint8_t step_counter;
+
     if(level_countdown > 0) {
         --level_countdown;
 
-        if((level_countdown & 31) == 0) {
+        // Don't draw level number on the demo
+        if(!demo && (level_countdown & 31) == 0) {
             init_font_sqr();
 
             if((level_countdown & 63) == 0) {
@@ -134,7 +142,15 @@ void tick_board(void) {
     } else {
         process_buttons();
     }
-    if(frame_counter & 3 || tick_func_last == tick_board) return;
+
+    // We've been switched out
+    if(tick_func_last == tick_board) return;
+
+    if(++step_counter == step) {
+        step_counter = 0;
+    } else {
+        return;
+    }
 
     move_head();
     bool eaten_apple = read_cell(head.position) == APPLE_COLOR;
