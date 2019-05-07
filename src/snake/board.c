@@ -25,10 +25,11 @@ static const point_t DIRECTIONS[4] = {
 bool demo;
 
 static point_t demo_apples[] PROGMEM = {
-    {15, 6},
-    {10, 8},
-    {25, 9},
-    {2, 20}
+    {11, 12},
+    {28, 18},
+    {15, 29},
+    {1, 28},
+    {25, 3}
 };
 static uint8_t apple_index;
 
