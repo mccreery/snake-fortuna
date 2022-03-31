@@ -22,11 +22,12 @@ BLOB  := blob
 
 BOARD := LaFortuna
 MCU   := at90usb1286
+ARCH  := avr51
 F_CPU := 8000000UL
 
 # Preprocessor flags, not C++
 CPPFLAGS    := -DF_CPU=$(F_CPU) -iquotesrc $(DEFINES)
-WARNINGS    := -Wall -Wextra -pedantic \
+WARNINGS    := -Wall -Wextra -Werror -pedantic \
                -Wno-main -fno-strict-aliasing \
                -Wstrict-overflow=5 -fstrict-overflow -Winline
 CWARNINGS   := -Wstrict-prototypes -Wmissing-prototypes \
@@ -56,7 +57,7 @@ $(BUILD)/%.hex: $(BUILD)/%.elf
 	echo $(patsubst $(BUILD)/%.hex,flash: flash-%,$@) > $(BUILD)/flash.mk
 
 $(BUILD)/%.eep: $(BUILD)/%.elf
-	avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
+	avr-objcopy -B $(ARCH) -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
 	echo $(patsubst $(BUILD)/%.eep,eeprom: eeprom-%,$@) > $(BUILD)/eeprom.mk
 
 .SECONDEXPANSION:
@@ -79,7 +80,7 @@ $(BUILD)/%.o: $(SRC)/%.cpp
 # Generated blobs
 $(BUILD)/%.o: $(BUILD)/%
 	mkdir -p $(dir $@)
-	avr-objcopy \
+	avr-objcopy -B $(ARCH) \
 		--rename-section .data=.progmem.data,contents,alloc,load,readonly,data \
 		--redefine-sym _binary_$(BUILD)_$*_start=$* \
 		--redefine-sym _binary_$(BUILD)_$*_end=$*_end \
@@ -89,7 +90,7 @@ $(BUILD)/%.o: $(BUILD)/%
 # Source blobs
 $(BUILD)/%.o: $(BLOB)/%
 	mkdir -p $(dir $@)
-	avr-objcopy \
+	avr-objcopy -B $(ARCH) \
 		--rename-section .data=.progmem.data,contents,alloc,load,readonly,data \
 		--redefine-sym _binary_$(BLOB)_$*_start=$* \
 		--redefine-sym _binary_$(BLOB)_$*_end=$*_end \

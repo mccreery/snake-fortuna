@@ -14,7 +14,7 @@
 #define START_MARKER (marker_t){{START_X, START_Y}, {0, 1}}
 
 // Simple square
-static marker_t demo_moves[] PROGMEM = {
+static const marker_t demo_moves[] PROGMEM = {
     {{1, 6}, {1, 0}},
     {{4, 6}, {0, -1}},
     {{4, 29}, {1, 0}},

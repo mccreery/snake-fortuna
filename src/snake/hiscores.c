@@ -55,11 +55,6 @@ void setup_hiscores(void) {
     clear_score(&rising_score);
     score_rank = 10;
 
-    char str[7];
-    str[0] = ' ';
-    str[1] = ' ';
-    str[5] = '\0';
-
     for(uint8_t i = 0; i < 10; i++) {
         draw_hiscore(i);
     }

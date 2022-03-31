@@ -29,7 +29,7 @@ static const point_t DIRECTIONS[4] = {
 
 bool demo;
 
-static point_t demo_apples[] PROGMEM = {
+static const point_t demo_apples[] PROGMEM = {
     {11, 12},
     {28, 18},
     {15, 29},
